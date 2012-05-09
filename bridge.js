@@ -29,8 +29,8 @@ Bridge = {
     // add args to callback table
     var callbackId = Bridge.nextCallbackId++;
     Bridge.dispatchTable[callbackId] = {
-      success: args.success,
-      error: args.error
+      success: args.success || function(response) {},
+      error: args.error || function(response) {}
     }
     var message = {
       args:       args,
@@ -52,11 +52,7 @@ Bridge = {
     var message = JSON.parse(event.data);
     var func_to_call =
       Bridge.dispatchTable[message.callbackId][message.successOrFail];
-    if(typeof(func_to_call) === "undefined"){
-      throw "No callback for bridge to call on "+message.successOrFail+"; message: "+event.data;
-    } else {
-      func_to_call(message.response);
-    }
+    func_to_call(message.response);
   }
 }
 
