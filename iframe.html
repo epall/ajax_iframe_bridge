@@ -1,30 +1,28 @@
 <html>
   <head>
-    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.6.1/jquery.min.js">
-    </script>
-    <script>
-      var receiveMessage = function (event) {
+    <script src="//ajax.googleapis.com/ajax/libs/jquery/1.7/jquery.min.js"></script>
+    <script src="json2.js"></script>
+    <script type="text/javascript">
+      var receiveMessage = function (e) {
         // todo here: security for event.src coming from a reasonable place
-        var message = JSON.parse(event.data);
-        (function(message, $){
-          var ajaxResponse = function(successOrFail,callbackId) {
-            return function(response) {
-              event.source.postMessage(JSON.stringify({
-                callbackId:    callbackId,
-                successOrFail: successOrFail,
-                response:      response
-              }), event.origin);
-            }
+        var message = JSON.parse(e.data);
+        var ajaxResponse = function(successOrFail,callbackId) {
+          return function(response) {
+            window.parent.postMessage(JSON.stringify({
+              callbackId:    callbackId,
+              successOrFail: successOrFail,
+              response:      response
+            }),e.origin);
           }
-          message.args.success = ajaxResponse("success",message.callbackId);
-          message.args.error = ajaxResponse("error",message.callbackId);
-          $.ajax(message.args);
-        })(message, jQuery);
+        }
+        message.args.success = ajaxResponse("success",message.callbackId);
+        message.args.error = ajaxResponse("error",message.callbackId);
+        $.ajax(message.args);
       };
       if(window.addEventListener) {
         window.addEventListener("message", receiveMessage, false);        
       } else {
-        window.attachEvent("message", receiveMessage);
+        window.attachEvent("onmessage", receiveMessage);
       }
     </script>
   </head>

@@ -19,7 +19,11 @@ Bridge = {
     };
 
     if(document.readyState === "loading") {
-      document.addEventListener('DOMContentLoaded', append, false);
+      if(document.addEventListener) {
+        document.addEventListener('DOMContentLoaded', append, false);
+      } else {
+        document.attachEvent('onload', append);
+      }
     } else {
       append();
     }
@@ -59,5 +63,5 @@ Bridge = {
 if(window.addEventListener) {
   window.addEventListener('message', Bridge.receive, false);
 } else {
-  window.attachEvent('message', Bridge.receive);  
+  window.attachEvent('onmessage', Bridge.receive);  
 }
