@@ -60,4 +60,8 @@ Bridge = {
   }
 }
 
-window.addEventListener('message', Bridge.receive, false);
+if(window.addEventListener) {
+  window.addEventListener('message', Bridge.receive, false);
+} else {
+  window.attachEvent('message', Bridge.receive);  
+}

@@ -21,7 +21,11 @@
           $.ajax(message.args);
         })(message, jQuery);
       };
-      window.addEventListener("message", receiveMessage, false);
+      if(window.addEventListener) {
+        window.addEventListener("message", receiveMessage, false);        
+      } else {
+        window.attachEvent("message", receiveMessage);
+      }
     </script>
   </head>
   <body></body>
