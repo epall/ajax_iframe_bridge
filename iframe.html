@@ -12,7 +12,7 @@
               callbackId:    callbackId,
               successOrFail: successOrFail,
               response:      response
-            }),e.origin);
+            }),(e.origin || '*'));
           }
         }
         message.args.success = ajaxResponse("success",message.callbackId);
