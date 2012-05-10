@@ -6,17 +6,19 @@
       var receiveMessage = function (e) {
         // todo here: security for event.src coming from a reasonable place
         var message = JSON.parse(e.data);
-        var ajaxResponse = function(successOrFail,callbackId) {
+        var ajaxResponse = function(successOrFail,callbackId,e) {
+          var origin = e.origin,
+            source = e.source;
           return function(response) {
-            window.parent.postMessage(JSON.stringify({
-              callbackId:    callbackId,
-              successOrFail: successOrFail,
-              response:      response
-            }),(e.origin || '*'));
+            source.postMessage(JSON.stringify({
+              callbackId:callbackId,
+              successOrFail:successOrFail,
+              response:response
+            }),origin);
           }
         }
-        message.args.success = ajaxResponse("success",message.callbackId);
-        message.args.error = ajaxResponse("error",message.callbackId);
+        message.args.success = ajaxResponse("success",message.callbackId,e);
+        message.args.error = ajaxResponse("error",message.callbackId,e);
         $.ajax(message.args);
       };
       if(window.addEventListener) {

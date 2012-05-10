@@ -14,7 +14,7 @@ Bridge = {
     if (Bridge.iframe.attachEvent) {
       Bridge.iframe.attachEvent("onload", Bridge.set_ready);
     }
-    append = function() {
+  append = function() {
       document.body.appendChild(Bridge.iframe);
     };
 
@@ -37,7 +37,7 @@ Bridge = {
       error: args.error || function(response) {}
     }
     var message = {
-      args:       args,
+      args: args,
       callbackId: callbackId
     };
     Bridge.iframe.contentWindow.postMessage(
@@ -50,13 +50,11 @@ Bridge = {
       Bridge.ajax(Bridge.queue[q]);
     }
   },
-  receive : function(event) {
+  receive : function(e) {
     // ensure that we're catching the right event
-    if(event.origin.indexOf(Bridge.origin) !== 0) return;
-    var message = JSON.parse(event.data);
-    var func_to_call =
-      Bridge.dispatchTable[message.callbackId][message.successOrFail];
-    func_to_call(message.response);
+    if(e.origin.indexOf(Bridge.origin) !== 0) return;
+    var message = JSON.parse(e.data);
+    Bridge.dispatchTable[message.callbackId][message.successOrFail](message.response);
   }
 }
 
